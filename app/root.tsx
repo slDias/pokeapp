@@ -11,6 +11,7 @@ import "./app.css";
 
 import type { Route } from "./+types/root";
 import PKMNavBar from "./components/PKMNavBar/PKMNavBar";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +22,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
       </head>
       <body>
-        {children}
+        <LucideProvider strokeWidth={1.0}>
+          <TooltipProvider>
+            <div className="fixed w-full h-11/12 overflow-auto">{children}</div>
+            <div className="fixed w-full h-1/12 bottom-0">
+              <PKMNavBar />
+            </div>
+          </TooltipProvider>
+        </LucideProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -30,16 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return (
-    <LucideProvider strokeWidth={1.0}>
-      <div className="fixed w-full h-11/12 overflow-auto">
-        <Outlet />
-      </div>
-      <div className="fixed w-full h-1/12 bottom-0">
-        <PKMNavBar />
-      </div>
-    </LucideProvider>
-  );
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

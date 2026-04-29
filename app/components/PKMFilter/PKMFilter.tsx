@@ -5,7 +5,7 @@ import { Input } from "~/components/ui/input";
 
 export default function PKMFilter() {
   return (
-    <div className="border-soli border-b px-2 py-4 flex gap-2">
+    <div className="border-b px-2 py-4 flex gap-2 mb-4">
       <Field className="gap-1 grow">
         <FieldLabel>Search</FieldLabel>
         <Input placeholder="Charmander" />

@@ -1,13 +1,20 @@
 import { Card } from "~/components/ui/card";
+import PKMIdLabel from "../PKMIdLabel";
+import PKMCaughtBadge from "../PKMCaughtBadge";
 
 export default function PKMCard({ pokemon }: { pokemon: Pokemon }) {
   return (
-    <Card className="items-center basis-1/5 gap-0.5">
-      <div className="w-16 h-16 border rounded-tr-lg rounded-bl-lg bg-secondary">
-        <img src={pokemon.sprite} className="w-32 h-32 -mt-8 object-cover" />
+    <Card
+      className={`basis-1/5 rounded-tl-none rounded-br-none gap-0.5 p-2 ${!pokemon.caught && "opacity-55 grayscale-75"}`}
+    >
+      <div className="self-center w-24 h-24 border rounded-tr-xl rounded-bl-xl bg-secondary">
+        <img src={pokemon.sprite} />
       </div>
-      <div>{pokemon.name}</div>
-      <div>#{pokemon.id.toString().padStart(3, "0")}</div>
+      <div className="truncate">{pokemon.name}</div>
+      <div className="flex items-center justify-between">
+        <PKMIdLabel value={pokemon.id} />
+        <PKMCaughtBadge value={pokemon.caught} />
+      </div>
     </Card>
   );
 }
