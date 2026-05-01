@@ -1,25 +1,14 @@
-import { LucideFilter, LucideListFilter } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Field, FieldDescription, FieldLabel } from "~/components/ui/field";
-import { Input } from "~/components/ui/input";
+import PKMSortMenu from "./PKMSortMenu";
+import PKMFilterDialog from "./PKMFilterDialog";
+import PKMSearch from "./PKMSearch";
 
 export default function PKMFilter() {
   return (
     <div className="border-b px-2 py-4 flex gap-2 mb-4">
-      <Field className="gap-1 grow">
-        <FieldLabel>Search</FieldLabel>
-        <Input placeholder="Charmander" />
-        <FieldDescription>Search a pokémon by name or id</FieldDescription>
-      </Field>
+      <PKMSearch className="gap-1 grow" />
       <div className="flex flex-col shrink gap-1">
-        <Button variant="outline" className="py-4.5">
-          <LucideListFilter />
-          Sort
-        </Button>
-        <Button variant="outline" className="py-4.5">
-          <LucideFilter />
-          Filters
-        </Button>
+        <PKMSortMenu />
+        <PKMFilterDialog />
       </div>
     </div>
   );

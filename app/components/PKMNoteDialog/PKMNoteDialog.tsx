@@ -1,36 +1,33 @@
 import { Button } from "~/components/ui/button";
-import { PlusCircle } from "lucide-react";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "~/components/ui/dialog";
 import { Textarea } from "../ui/textarea";
 
-export default function PKMAddNote() {
+export default function PKMNoteDialog({
+  show,
+  note,
+}: {
+  show: boolean;
+  note?: Note;
+}) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant={"outline"}>
-          <PlusCircle />
-          <span>Add</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={show}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a new note</DialogTitle>
+          <DialogTitle>Note</DialogTitle>
         </DialogHeader>
-        <Textarea />
+        <Textarea /> {/* TODO: note.content.value here */}
         <DialogFooter className="flex flex-row justify-between">
           <DialogClose className="flex" asChild>
             <Button variant={"outline"}>Cancel</Button>
           </DialogClose>
-          <Button>Add</Button> {/* TODO: implement */}
+          <Button>Save</Button> {/* TODO: implement */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

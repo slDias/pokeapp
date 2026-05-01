@@ -1,7 +1,7 @@
 interface Pokemon {
   id: number;
   name: string;
-  sprite: string;
+  sprite: Array<string>;
   caught: boolean;
   health: number;
   type: Array<string>; // todo enum

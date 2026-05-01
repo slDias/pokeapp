@@ -89,7 +89,7 @@ export default function Dashboard() {
         </Table>
       </div>
       <div className="gap-2 flex flex-col">
-        <div>Pokémon by type</div>
+        <div>Type distribution</div>
         <PKMTypeChart></PKMTypeChart>
       </div>
     </div>

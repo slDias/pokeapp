@@ -1,5 +1,6 @@
 import type { Route } from "./+types/pokedex";
 import { useState } from "react";
+import { Link } from "react-router";
 import PKMCard from "~/components/PKMCard/PKMCard";
 import PKMFilter from "~/components/PKMFilter/PKMFilter";
 
@@ -15,7 +16,9 @@ export default function Pokedex() {
     pArray.map((v, i) => ({
       id: i + 1,
       name: "Crabominableaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`,
+      sprite: [
+        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`,
+      ],
       caught: Math.random() < 0.5,
       health: 100,
       type: ["plant", "venom"],
@@ -34,8 +37,10 @@ export default function Pokedex() {
     <div>
       <PKMFilter />
       <div className="grid m-2 grid-cols-3 gap-2">
-        {pokemonList.map((p) => (
-          <PKMCard pokemon={p} />
+        {pokemonList.map((p, i) => (
+          <Link to={`/pokemon/${p.id}`} key={i}>
+            <PKMCard pokemon={p} />
+          </Link>
         ))}
       </div>
     </div>
