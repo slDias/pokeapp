@@ -1,37 +1,17 @@
 import type { Route } from "./+types/pokedex";
-import { useState } from "react";
 import { Link } from "react-router";
 import PKMCard from "~/components/PKMCard/PKMCard";
 import PKMFilter from "~/components/PKMFilter/PKMFilter";
+import { Button } from "~/components/ui/button";
+import usePokedex from "~/hooks/usePokedex.hook";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Pokédex" }];
 }
 
 export default function Pokedex() {
-  // todo: this is temporary mock to test the design.
-  let pArray = new Array(50).fill(null);
-
-  const [pokemonList, setPokemonList] = useState(
-    pArray.map((v, i) => ({
-      id: i + 1,
-      name: "Crabominableaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      sprite: [
-        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`,
-      ],
-      caught: Math.random() < 0.5,
-      health: 100,
-      type: ["plant", "venom"],
-      weightGrams: 7500,
-      heightCm: 102,
-      speed: 35,
-      attack: 49,
-      defense: 45,
-      specialAttack: 65,
-      specialDefense: 45,
-      caughtDate: new Date("2026-04-29T15:33:18.243Z"),
-    })),
-  );
+  const { pokemonList, fillPokemonList, isLoading, isPkmListFull } =
+    usePokedex();
 
   return (
     <div>
@@ -42,6 +22,19 @@ export default function Pokedex() {
             <PKMCard pokemon={p} />
           </Link>
         ))}
+      </div>
+      <div className="flex w-full justify-center my-4">
+        {isLoading
+          ? "loading..."
+          : !isPkmListFull && (
+              <Button
+                className="px-4"
+                variant="outline"
+                onClick={(_) => fillPokemonList(10)}
+              >
+                Load more
+              </Button>
+            )}
       </div>
     </div>
   );
