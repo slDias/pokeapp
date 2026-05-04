@@ -22,9 +22,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Pokemon({ params }: Route.ComponentProps) {
   // todo: fetch
-  const { pokemon, showDialog, setShowDialog, isLoading } = usePokemon(
-    parseInt(params.pokemonId),
-  );
+  const { pokemon, showDialog, setShowDialog, isLoading, setCaught, saveNote } =
+    usePokemon(parseInt(params.pokemonId));
 
   return (
     <div className="flex flex-col">
@@ -62,7 +61,10 @@ export default function Pokemon({ params }: Route.ComponentProps) {
               <Share2 size={18} /> Share
               {/* TODO: will generate an encoded url with this pokemon's data */}
             </Button>
-            <Button variant={pokemon.caught ? "destructive" : "default"}>
+            <Button
+              variant={pokemon.caught ? "destructive" : "default"}
+              onClick={() => setCaught()}
+            >
               <PKMCaughtBadge value={!pokemon.caught} />
               {pokemon.caught ? "Release" : "Catch!"}
             </Button>
@@ -94,13 +96,17 @@ export default function Pokemon({ params }: Route.ComponentProps) {
                   <PlusCircle />
                   <span>Add</span>
                 </Button>
-                <PKMNoteDialog show={showDialog} /> {/* todo: trigger */}
+                <PKMNoteDialog
+                  saveNote={saveNote}
+                  show={showDialog}
+                  setShow={setShowDialog}
+                />
               </div>
             </div>
             {pokemon.notes && (
               <div className="px-2 py-4 flex flex-col gap-2">
-                {pokemon.notes.map((n) => (
-                  <PKMNote note={n} />
+                {pokemon.notes.map((n, i) => (
+                  <PKMNote idx={i} note={n} saveNote={saveNote} />
                 ))}
               </div>
             )}

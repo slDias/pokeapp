@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import type { Route } from "./+types/pokedex";
 import { Link } from "react-router";
 import PKMCard from "~/components/PKMCard/PKMCard";
@@ -18,9 +17,6 @@ export default function Pokedex() {
       <PKMFilter setFilterIdList={setIdFilter} />
       {syncProgress != 100 && <Progress value={syncProgress} />}
       <div className="grid mx-2 my-4 grid-cols-3 gap-2">
-        {
-          //todo: .filter on id
-        }
         {pokemonList
           .filter((p) => !idFilter.size || idFilter.has(p.id))
           .map((p) => (

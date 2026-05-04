@@ -10,6 +10,7 @@ interface PokedexState {
 interface PokedexAction {
   setPokemonNameList: (newList: string[]) => void;
   addToPokemonList: (pokemon: Pokemon[]) => void;
+  updatePokemon: (pokemon: Pokemon) => void;
   setSyncProgress: (progress: number) => void;
   reset: () => void;
 }
@@ -28,6 +29,16 @@ export const usePokedexStore = create<PokedexState & PokedexAction>()(
             ...state,
             pokemonList: [...state.pokemonList, ...pokemon],
           }));
+        },
+        updatePokemon(pokemon) {
+          set((state) => {
+            let idx = state.pokemonList.findIndex((p) => p.id == pokemon.id);
+            if (idx === -1)
+              return { ...state, pokemonList: [...state.pokemonList, pokemon] };
+            let pokemonList = [...state.pokemonList];
+            pokemonList[idx] = pokemon;
+            return { ...state, pokemonList };
+          });
         },
         setSyncProgress(progress) {
           set((state) => ({ ...state, syncProgress: progress }));

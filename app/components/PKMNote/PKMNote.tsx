@@ -10,8 +10,15 @@ import {
 } from "~/components/ui/dropdown-menu";
 import PKMConfirmationDialog from "../PKMConfirmationDialog";
 
-export default function PKMNote({ note }: { note: Note }) {
-  // TODO: move
+export default function PKMNote({
+  note,
+  idx,
+  saveNote,
+}: {
+  note: Note;
+  idx: number;
+  saveNote: (n: Note, i?: number) => void;
+}) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   return (
@@ -19,7 +26,7 @@ export default function PKMNote({ note }: { note: Note }) {
       <div className="border-b-2 p-2 border-dashed">{note.content}</div>
       <div className="flex items-center justify-between px-2 py-1">
         <div className="text-sm">{note.createdDate.toLocaleString()}</div>
-        <DropdownMenu>
+        {/*<DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"ghost"}>
               <Ellipsis></Ellipsis>
@@ -33,9 +40,16 @@ export default function PKMNote({ note }: { note: Note }) {
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu>*/}
       </div>
-      <PKMNoteDialog show={showEditDialog} note={note} />
+      {/*<PKMNoteDialog
+        show={showEditDialog}
+        setShow={setShowEditDialog}
+        fromNote={note}
+        idx={idx}
+        saveNote={saveNote}
+        />*/}
+      {/* todo: breaks because we are passing note again which wont be shallow and cause re-render */}
       <PKMConfirmationDialog show={showDeleteDialog} />
     </div>
   );

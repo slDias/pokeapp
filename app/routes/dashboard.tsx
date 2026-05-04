@@ -23,6 +23,7 @@ export default function Dashboard() {
   //  - chart of caughts by day last 7 days
 
   // todo: this is temporary mock to test the design.
+  // Unfortunately, won't have time to implement it.
   let pArray = new Array(10).fill(null);
   const [last10, setLast10] = useState(
     pArray.map((v, i) => ({

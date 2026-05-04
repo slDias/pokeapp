@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pokedex } from "pokeapi-js-wrapper";
 import { usePokedexStore } from "~/store";
-import { toast } from "sonner";
 import { parsePokemon } from "~/lib/utils";
 
 const api = new Pokedex();
@@ -19,6 +18,8 @@ export default function usePokemon(pokemonId: number) {
 
     if (cachedPokemon) {
       setIsLoading(false);
+      if (typeof cachedPokemon.caughtDate === "string")
+        cachedPokemon.caughtDate = new Date(cachedPokemon.caughtDate);
       setPokemon(cachedPokemon);
       return;
     }
@@ -31,5 +32,25 @@ export default function usePokemon(pokemonId: number) {
     fetchPokemon();
   }, []);
 
-  return { pokemon, showDialog, setShowDialog, isLoading };
+  const setCaught = () => {
+    if (!pokemon) return;
+    let caught = !pokemon.caught;
+    let caughtDate = caught ? new Date() : undefined;
+    const newPkm = { ...pokemon, caught, caughtDate };
+    usePokedexStore.getState().updatePokemon(newPkm);
+    setPokemon(newPkm);
+  };
+
+  const saveNote = (newNote: Note, idx?: number) => {
+    if (!pokemon) return;
+    newNote.createdDate = new Date();
+    let newNoteList = pokemon.notes || [];
+    if (idx === undefined) newNoteList.push(newNote);
+    else newNoteList[idx] = newNote;
+    const newPkm = { ...pokemon, notes: newNoteList } as Pokemon;
+    usePokedexStore.getState().updatePokemon(newPkm);
+    setPokemon(newPkm);
+  };
+
+  return { pokemon, showDialog, setShowDialog, isLoading, setCaught, saveNote };
 }
