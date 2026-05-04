@@ -2,25 +2,22 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
-import { useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 
 export default function PKMDateRange({
   className = "",
+  date,
+  setDate,
 }: {
   className?: string;
+  date?: DateRange | undefined;
+  setDate: (r: DateRange) => void;
 }) {
-  /*todo */
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(new Date().getFullYear(), 0, 20),
-    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
-  });
-
   return (
     <Popover>
       <PopoverTrigger className={`overflow-auto ${className}`}>
-        <Button variant="outline" className="max-w-full justify-start px-2.5">
+        <Button variant="outline" className="w-full justify-start px-2.5">
           <CalendarIcon />
           {date?.from ? (
             date.to ? (

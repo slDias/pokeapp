@@ -1,18 +1,25 @@
-import { useState } from "react";
 import { Field, FieldDescription, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
+import usePKMSearch from "./usePKMSearch.hook";
 
-export default function PKMSearch({ className = "" }: { className?: string }) {
-  const [search, setSearch] = useState("");
+type PKMSearchProps = {
+  className?: string;
+  setFilterIdList: (s: Set<number>) => void;
+};
+
+const PKMSearch = ({ className = "", setFilterIdList }: PKMSearchProps) => {
+  const { searchText, handleTextChange } = usePKMSearch(setFilterIdList);
   return (
     <Field className={className}>
       <FieldLabel>Search</FieldLabel>
       <Input
+        value={searchText}
         placeholder="Charmander"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={handleTextChange}
       />
       <FieldDescription>Search a pokémon by name or id</FieldDescription>
     </Field>
   );
-}
+};
+
+export default PKMSearch;

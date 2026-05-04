@@ -1,40 +1,33 @@
+import { useEffect } from "react";
 import type { Route } from "./+types/pokedex";
 import { Link } from "react-router";
 import PKMCard from "~/components/PKMCard/PKMCard";
 import PKMFilter from "~/components/PKMFilter/PKMFilter";
-import { Button } from "~/components/ui/button";
 import usePokedex from "~/hooks/usePokedex.hook";
+import { Progress } from "~/components/ui/progress";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Pokédex" }];
 }
 
 export default function Pokedex() {
-  const { pokemonList, fillPokemonList, isLoading, isPkmListFull } =
-    usePokedex();
+  const { pokemonList, syncProgress, setIdFilter, idFilter } = usePokedex();
 
   return (
     <div>
-      <PKMFilter />
-      <div className="grid m-2 grid-cols-3 gap-2">
-        {pokemonList.map((p, i) => (
-          <Link to={`/pokemon/${p.id}`} key={i}>
-            <PKMCard pokemon={p} />
-          </Link>
-        ))}
-      </div>
-      <div className="flex w-full justify-center my-4">
-        {isLoading
-          ? "loading..."
-          : !isPkmListFull && (
-              <Button
-                className="px-4"
-                variant="outline"
-                onClick={(_) => fillPokemonList(10)}
-              >
-                Load more
-              </Button>
-            )}
+      <PKMFilter setFilterIdList={setIdFilter} />
+      {syncProgress != 100 && <Progress value={syncProgress} />}
+      <div className="grid mx-2 my-4 grid-cols-3 gap-2">
+        {
+          //todo: .filter on id
+        }
+        {pokemonList
+          .filter((p) => !idFilter.size || idFilter.has(p.id))
+          .map((p) => (
+            <Link to={`/pokemon/${p.id}`} key={p.id}>
+              <PKMCard pokemon={p} />
+            </Link>
+          ))}
       </div>
     </div>
   );

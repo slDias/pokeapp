@@ -1,18 +1,26 @@
-import { useState } from "react";
 import { FieldLabel } from "../ui/field";
 import { Slider } from "../ui/slider";
 
-const MIN_HEIGHT = 0.1;
-const MAX_HEIGHT = 100.0;
-
 export default function PKMHeightSlider({
   className = "",
+  rangeStart,
+  setRangeStart,
+  rangeEnd,
+  setRangeEnd,
+  min,
+  max,
 }: {
   className?: string;
+  rangeStart: number;
+  setRangeStart: (nv: number) => void;
+  rangeEnd: number;
+  setRangeEnd: (nv: number) => void;
+  min: number;
+  max: number;
 }) {
   // todo
-  const [rangeStart, setRangeStart] = useState(MIN_HEIGHT);
-  const [rangeEnd, setRangeEnd] = useState(MAX_HEIGHT);
+  /*const [rangeStart, setRangeStart] = useState(MIN_HEIGHT);
+  const [rangeEnd, setRangeEnd] = useState(MAX_HEIGHT);*/
 
   const handleValueChange = (nv: number[]) => {
     setRangeStart(nv[0]);
@@ -24,13 +32,15 @@ export default function PKMHeightSlider({
       <div className="flex flex-row justify-between">
         <FieldLabel>Height</FieldLabel>
         <div>
-          from <span>{rangeStart}</span> {/* todo: connect */}
-          to <span>{rangeEnd}</span>
+          from <span>{rangeStart}cm</span> {/* todo: connect */}
+          to <span>{rangeEnd}cm</span>
         </div>
       </div>
       <Slider
-        defaultValue={[MIN_HEIGHT, MAX_HEIGHT]}
-        step={0.1}
+        defaultValue={[min, max]}
+        min={min}
+        max={max}
+        step={10}
         value={[rangeStart, rangeEnd]}
         onValueChange={(nv) => handleValueChange(nv)}
       />

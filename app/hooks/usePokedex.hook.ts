@@ -1,96 +1,80 @@
-import { useEffect, useState } from "react";
-import { Pokedex, type Pokemon as pokeapiPokemon } from "pokeapi-js-wrapper";
+import { Pokedex } from "pokeapi-js-wrapper";
 import { usePokedexStore } from "~/store";
+import { toast } from "sonner";
+import { parsePokemon } from "~/lib/utils";
+
+import { useShallow } from "zustand/react/shallow";
+import usePKMFilter from "~/components/PKMFilter/usePKMFilter.hook";
+import { useState } from "react";
 
 const api = new Pokedex();
 
 export default function usePokedex() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const setPokemonNameList = usePokedexStore((s) => s.setPokemonNameList);
-  const pokemonList = usePokedexStore((s) => s.pokemonList);
-  const addToPokemonList = usePokedexStore((s) => s.addToPokemonList);
-  const [isPkmListFull, setIsPkmListFull] = useState(false);
+  const setError = (msg: string) =>
+    toast.error(msg, { position: "top-center" });
 
-  const prefillPkmNames = async () => {
-    const pokemonNameList = usePokedexStore.getState().pokemonNameList;
-    if (pokemonNameList.length) return;
+  const [idFilter, setIdFilter] = useState<Set<number>>(new Set());
 
-    setIsLoading(true);
+  const filterHook = usePKMFilter(setIdFilter);
 
-    try {
-      const res = await api.getPokemonsList();
-      const parsed = res.results.map((p) => p.name);
-      setPokemonNameList(parsed);
-    } catch {
-      setError("Failed to fetch pokeapi data");
+  const sync = async () => {
+    let {
+      pokemonNameList,
+      setPokemonNameList,
+      pokemonList,
+      addToPokemonList,
+      setSyncProgress,
+    } = usePokedexStore.getState();
+
+    if (!pokemonNameList.length) {
+      let rawPkmNameList;
+
+      try {
+        rawPkmNameList = await api.getPokemonsList();
+      } catch {
+        setError("Network error while syncing. Try again.");
+        return;
+      }
+
+      usePokedexStore.getState().reset();
+      pokemonList = usePokedexStore.getState().pokemonList;
+
+      setPokemonNameList(rawPkmNameList.results.map((pkm) => pkm.name));
+      pokemonNameList = usePokedexStore.getState().pokemonNameList;
     }
 
-    setIsLoading(false);
+    const pkmCount = pokemonNameList.length;
+    let currCount = pokemonList.length;
+    const updtProgress = () => setSyncProgress((currCount / pkmCount) * 100);
+    updtProgress();
+
+    while (currCount != pkmCount) {
+      const req = pokemonNameList
+        .slice(currCount, currCount + 10)
+        .map((pkmName) => api.getPokemonByName(pkmName));
+
+      let res;
+
+      try {
+        res = await Promise.all(req);
+      } catch {
+        setError("Network error while syncing. Try again.");
+        return;
+      }
+
+      const newPkmns = res.map((r) => parsePokemon(r));
+      addToPokemonList(newPkmns);
+
+      currCount = Math.min(currCount + 10, pkmCount);
+      updtProgress();
+    }
   };
 
-  const fillPokemonList = async (targetAmount: number) => {
-    await prefillPkmNames();
-
-    const pokemonNameList = usePokedexStore.getState().pokemonNameList;
-
-    if (!pokemonNameList.length) return;
-
-    const currentPkmList = usePokedexStore.getState().pokemonList;
-
-    // if list is complete
-    if (pokemonNameList.length === currentPkmList.length) {
-      setIsPkmListFull(true);
-      return;
-    }
-
-    setIsLoading(true);
-
-    const startIdx = currentPkmList.length;
-    const nameList = pokemonNameList.slice(startIdx, startIdx + targetAmount);
-
-    let rawPokemonsList: pokeapiPokemon[] = [];
-
-    try {
-      rawPokemonsList = await Promise.all(
-        nameList.map((n) => api.getPokemonByName(n)),
-      );
-    } catch {
-      setError("Failed to fetch pokeapi data");
-    }
-
-    rawPokemonsList.forEach((p) => {
-      const pStatsMap = p.stats.reduce(
-        (res, stat) => {
-          res[stat.stat.name] = stat.base_stat;
-          return res;
-        },
-        {} as { [index: string]: number },
-      );
-
-      addToPokemonList({
-        id: p.id,
-        name: p.name,
-        sprite: [p.sprites.front_default, p.sprites.back_default],
-        caught: false,
-        health: pStatsMap["hp"] || 0,
-        type: p.types.map((t) => t.type.name),
-        weightGrams: p.weight, // todo: check conversion
-        heightCm: p.height, // todo: check conversion
-        speed: pStatsMap["speed"] || 0,
-        attack: pStatsMap["attack"] || 0,
-        defense: pStatsMap["defense"] || 0,
-        specialAttack: pStatsMap["special-attack"] || 0,
-        specialDefense: pStatsMap["special-defense"] || 0,
-      } as Pokemon);
-    });
-
-    setIsLoading(false);
+  return {
+    sync,
+    syncProgress: usePokedexStore(useShallow((state) => state.syncProgress)),
+    pokemonList: usePokedexStore(useShallow((state) => state.pokemonList)),
+    setIdFilter,
+    idFilter,
   };
-
-  useEffect(() => {
-    fillPokemonList(10);
-  }, []);
-
-  return { pokemonList, fillPokemonList, isPkmListFull, isLoading, error };
 }
