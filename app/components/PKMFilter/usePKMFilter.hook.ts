@@ -14,6 +14,7 @@ export default function usePKMFilter(setIdFilter: (f: Set<number>) => void) {
   };
 
   const setFilterIdFilter = (nf: Set<number>) => {
+    console.log("setting filter on applied dialog", nf);
     _setFilterIdFilter(nf);
     if (searchIdFilter.size) {
       const combinedFilter = searchIdFilter.intersection(nf);

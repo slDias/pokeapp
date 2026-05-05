@@ -4,6 +4,7 @@ import { devtools, persist } from "zustand/middleware";
 interface PokedexState {
   pokemonNameList: string[];
   pokemonList: Pokemon[];
+  pokemonTypeList: string[];
   syncProgress: number;
 }
 
@@ -12,6 +13,7 @@ interface PokedexAction {
   addToPokemonList: (pokemon: Pokemon[]) => void;
   updatePokemon: (pokemon: Pokemon) => void;
   setSyncProgress: (progress: number) => void;
+  setPokemonTypeList: (pkmTypeList: string[]) => void;
   reset: () => void;
 }
 
@@ -21,6 +23,7 @@ export const usePokedexStore = create<PokedexState & PokedexAction>()(
       (set, _, store) => ({
         pokemonNameList: [],
         pokemonList: [],
+        pokemonTypeList: [],
         syncProgress: 0,
         setPokemonNameList: (pokemonNameList) =>
           set((state) => ({ ...state, pokemonNameList })),
@@ -42,6 +45,9 @@ export const usePokedexStore = create<PokedexState & PokedexAction>()(
         },
         setSyncProgress(progress) {
           set((state) => ({ ...state, syncProgress: progress }));
+        },
+        setPokemonTypeList(pokemonTypeList) {
+          set((state) => ({ ...state, pokemonTypeList }));
         },
         reset: () => {
           set(store.getInitialState());

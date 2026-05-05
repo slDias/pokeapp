@@ -23,14 +23,19 @@ export default function usePokedex() {
       setPokemonNameList,
       pokemonList,
       addToPokemonList,
+      setPokemonTypeList,
       setSyncProgress,
     } = usePokedexStore.getState();
 
     if (!pokemonNameList.length) {
       let rawPkmNameList;
+      let rawPkmTypeList;
 
       try {
-        rawPkmNameList = await api.getPokemonsList();
+        [rawPkmNameList, rawPkmTypeList] = await Promise.all([
+          api.getPokemonsList(),
+          api.getTypesList(),
+        ]);
       } catch {
         setError("Network error while syncing. Try again.");
         return;
@@ -41,6 +46,8 @@ export default function usePokedex() {
 
       setPokemonNameList(rawPkmNameList.results.map((pkm) => pkm.name));
       pokemonNameList = usePokedexStore.getState().pokemonNameList;
+
+      setPokemonTypeList(rawPkmTypeList.results.map((t) => t.name));
     }
 
     const pkmCount = pokemonNameList.length;

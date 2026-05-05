@@ -1,63 +1,38 @@
-import { useState } from "react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Button } from "../ui/button";
+} from "~/components/ui/select";
+import { Button } from "~/components/ui/button";
 import { X } from "lucide-react";
+import type usePKMTypeSelect from "./usePKMTypeSelect";
 
-export default function PKMSelect({
-  selectedType,
-  setSelectedType,
-}: {
-  selectedType: string;
-  setSelectedType: (t: string) => void;
-}) {
-  const typeList = [
-    "normal",
-    "fighting",
-    "flying",
-    "poison",
-    "ground",
-    "rock",
-    "bug",
-    "ghost",
-    "steel",
-    "fire",
-    "water",
-    "grass",
-    "electric",
-    "psychic",
-    "ice",
-    "dragon",
-    "dark",
-    "fairy",
-    "stellar",
-    "unknown",
-    "shadow",
-  ];
-  return (
-    <div className="basis-2/3 flex">
-      <Select value={selectedType} onValueChange={setSelectedType}>
-        <SelectTrigger className="w-full">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {typeList.map((t, i) => (
-            <SelectItem key={i} value={t}>
-              {t}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {selectedType && (
-        <Button variant={"ghost"} onClick={(_) => setSelectedType("")}>
-          <X />
-        </Button>
-      )}
-    </div>
-  );
-}
+type PKMTypeSelectProps = {
+  hook: ReturnType<typeof usePKMTypeSelect>;
+};
+
+const PKMTypeSelect = ({ hook }: PKMTypeSelectProps) => (
+  <div className="basis-2/3 flex">
+    <Select value={hook.selectedType} onValueChange={hook.setSelectedType}>
+      <SelectTrigger className="w-full">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {hook.pokemonTypeList.map((t, i) => (
+          <SelectItem key={i} value={t}>
+            {t}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+    {hook.selectedType && (
+      <Button variant={"ghost"} onClick={(_) => hook.setSelectedType("")}>
+        <X />
+      </Button>
+    )}
+  </div>
+);
+
+export default PKMTypeSelect;
