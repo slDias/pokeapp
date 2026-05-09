@@ -13,8 +13,7 @@ import type { Route } from "./+types/root";
 import PKMNavBar from "./components/PKMNavBar/PKMNavBar";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
-import usePokedex from "./hooks/usePokedex.hook";
-import { useEffect } from "react";
+import { usePokedexStore } from "./store";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -41,16 +40,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-let didInit = false;
-
 export default function App() {
-  const { sync } = usePokedex();
-
-  useEffect(() => {
-    if (!didInit) sync();
-    didInit = true;
-  }, []);
-
+  usePokedexStore.getState().sync();
   return <Outlet />;
 }
 

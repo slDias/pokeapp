@@ -11,7 +11,10 @@ export default function usePKMSearch(
   const [searchText, _setSearchText] = useState("");
 
   const fuse = useMemo(() => {
-    const pokemonIdList = pokemonList.map((p) => ({ id: p.id, name: p.name }));
+    const pokemonIdList = pokemonList
+      .values()
+      .toArray()
+      .map((p) => ({ id: p.id, name: p.name }));
     return new Fuse(pokemonIdList, {
       keys: ["name", "id"],
       threshold: 0.3,
@@ -31,7 +34,7 @@ export default function usePKMSearch(
     [],
   );
 
-  const handleTextChange = (e) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     _setSearchText(e.target.value);
     setSearchText(e.target.value);
   };

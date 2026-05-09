@@ -17,12 +17,12 @@ const PKMTypeSelect = ({ hook }: PKMTypeSelectProps) => (
   <div className="basis-2/3 flex">
     <Select value={hook.selectedType} onValueChange={hook.setSelectedType}>
       <SelectTrigger className="w-full">
-        <SelectValue />
+        <SelectValue placeholder="Pick a type" />
       </SelectTrigger>
       <SelectContent>
         {hook.pokemonTypeList.map((t, i) => (
           <SelectItem key={i} value={t}>
-            {t}
+            {t.charAt(0).toUpperCase() + t.slice(1)}
           </SelectItem>
         ))}
       </SelectContent>

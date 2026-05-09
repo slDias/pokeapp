@@ -18,19 +18,18 @@ import { Checkbox } from "../ui/checkbox";
 import usePKMFilterDialogHook from "./usePKMFilterDialog.hook";
 
 export default function PKMFilterDialog({
-  setFilter,
+  setFilteredPokemon,
 }: {
-  setFilter: (nf: Set<number>) => void;
+  setFilteredPokemon: (pkms: Pokemon[]) => void;
 }) {
   const {
     sliderHook,
     typeSelectHook,
-    date,
-    setDate,
+    dateRangePickerHook,
     onlyCaught,
     setOnlyCaught,
     applyFilters,
-  } = usePKMFilterDialogHook(setFilter);
+  } = usePKMFilterDialogHook(setFilteredPokemon);
 
   return (
     <Dialog>
@@ -59,7 +58,10 @@ export default function PKMFilterDialog({
         <Field>
           <div className="flex">
             <FieldLabel className="basis-1/3">Caught Date</FieldLabel>
-            <PKMDateRange date={date} setDate={setDate} className="basis-2/3" />
+            <PKMDateRange
+              hook={dateRangePickerHook}
+              className="basis-2/3 flex max-w-2/3"
+            />
           </div>
         </Field>
         <Field>
@@ -67,8 +69,8 @@ export default function PKMFilterDialog({
             <FieldLabel className="basis-1/3">Caught Only</FieldLabel>
             <Checkbox
               checked={onlyCaught}
-              onCheckedChange={(s) => setOnlyCaught(!!s)}
-            ></Checkbox>
+              onCheckedChange={(c) => setOnlyCaught(!onlyCaught)}
+            />
           </div>
         </Field>
         <DialogFooter>

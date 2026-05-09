@@ -1,60 +1,49 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools, persist, type StorageValue } from "zustand/middleware";
+import { usePokemonTypeSlice, type PokemonTypeSlice } from "./pokemonType";
+import { usePokemonListSlice, type PokemonListSlice } from "./pokemonList";
 
-interface PokedexState {
-  pokemonNameList: string[];
-  pokemonList: Pokemon[];
-  pokemonTypeList: string[];
-  syncProgress: number;
-}
+export interface PokedexState extends PokemonTypeSlice, PokemonListSlice {}
 
-interface PokedexAction {
-  setPokemonNameList: (newList: string[]) => void;
-  addToPokemonList: (pokemon: Pokemon[]) => void;
-  updatePokemon: (pokemon: Pokemon) => void;
-  setSyncProgress: (progress: number) => void;
-  setPokemonTypeList: (pkmTypeList: string[]) => void;
-  reset: () => void;
-}
-
-export const usePokedexStore = create<PokedexState & PokedexAction>()(
+export const usePokedexStore = create<PokedexState>()(
   devtools(
     persist(
-      (set, _, store) => ({
-        pokemonNameList: [],
-        pokemonList: [],
-        pokemonTypeList: [],
-        syncProgress: 0,
-        setPokemonNameList: (pokemonNameList) =>
-          set((state) => ({ ...state, pokemonNameList })),
-        addToPokemonList(pokemon) {
-          set((state) => ({
-            ...state,
-            pokemonList: [...state.pokemonList, ...pokemon],
-          }));
-        },
-        updatePokemon(pokemon) {
-          set((state) => {
-            let idx = state.pokemonList.findIndex((p) => p.id == pokemon.id);
-            if (idx === -1)
-              return { ...state, pokemonList: [...state.pokemonList, pokemon] };
-            let pokemonList = [...state.pokemonList];
-            pokemonList[idx] = pokemon;
-            return { ...state, pokemonList };
-          });
-        },
-        setSyncProgress(progress) {
-          set((state) => ({ ...state, syncProgress: progress }));
-        },
-        setPokemonTypeList(pokemonTypeList) {
-          set((state) => ({ ...state, pokemonTypeList }));
-        },
-        reset: () => {
-          set(store.getInitialState());
+      (set, get, store) => ({
+        ...usePokemonTypeSlice(set, get, store),
+        ...usePokemonListSlice(set, get, store),
+        sync: () => {
+          get().syncPkmType();
+          get().syncPkmList();
         },
       }),
       {
         name: "pokemon-name",
+        storage: {
+          getItem: (name) => {
+            const str = localStorage.getItem(name);
+            if (!str) return null;
+            const existingValue = JSON.parse(str);
+            return {
+              ...existingValue,
+              state: {
+                ...existingValue.state,
+                pokemonList: new Map(existingValue.state.pokemonList),
+              },
+            };
+          },
+          setItem: (name, newValue: StorageValue<PokedexState>) => {
+            // functions cannot be JSON encoded
+            const str = JSON.stringify({
+              ...newValue,
+              state: {
+                ...newValue.state,
+                pokemonList: Array.from(newValue.state.pokemonList.entries()),
+              },
+            });
+            localStorage.setItem(name, str);
+          },
+          removeItem: (name) => localStorage.removeItem(name),
+        },
       },
     ),
   ),

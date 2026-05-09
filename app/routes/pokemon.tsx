@@ -63,7 +63,7 @@ export default function Pokemon({ params }: Route.ComponentProps) {
             </Button>
             <Button
               variant={pokemon.caught ? "destructive" : "default"}
-              onClick={() => setCaught()}
+              onClick={() => setCaught(!pokemon.caught)}
             >
               <PKMCaughtBadge value={!pokemon.caught} />
               {pokemon.caught ? "Release" : "Catch!"}
@@ -80,9 +80,7 @@ export default function Pokemon({ params }: Route.ComponentProps) {
             <div>Special Attack: {pokemon.specialAttack}</div>
             <div>Special Defense: {pokemon.specialDefense}</div>
             <div>
-              Caught date:{" "}
-              {(pokemon.caught && pokemon.caughtDate!.toLocaleDateString()) ||
-                "n/a"}
+              Caught date: {pokemon.caughtDate?.toLocaleDateString() || "n/a"}
             </div>
           </div>
           <div className="p-2 flex flex-col border-t-2 bg-secondary">
