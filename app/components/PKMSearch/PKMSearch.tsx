@@ -3,12 +3,20 @@ import { Input } from "../ui/input";
 import usePKMSearch from "./usePKMSearch.hook";
 
 type PKMSearchProps = {
+  filteredPokemonList: Pokemon[];
+  setFilteredPokemon: (p: Pokemon[]) => void;
   className?: string;
-  setFilterIdList: (s: Set<number>) => void;
 };
 
-const PKMSearch = ({ className = "", setFilterIdList }: PKMSearchProps) => {
-  const { searchText, handleTextChange } = usePKMSearch(setFilterIdList);
+const PKMSearch = ({
+  className = "",
+  filteredPokemonList,
+  setFilteredPokemon,
+}: PKMSearchProps) => {
+  const { searchText, handleTextChange } = usePKMSearch(
+    filteredPokemonList,
+    setFilteredPokemon,
+  );
   return (
     <Field className={className}>
       <FieldLabel>Search</FieldLabel>
@@ -22,4 +30,4 @@ const PKMSearch = ({ className = "", setFilterIdList }: PKMSearchProps) => {
   );
 };
 
-export default PKMSearch;
+export { PKMSearch };

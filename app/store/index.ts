@@ -3,7 +3,9 @@ import { devtools, persist, type StorageValue } from "zustand/middleware";
 import { usePokemonTypeSlice, type PokemonTypeSlice } from "./pokemonType";
 import { usePokemonListSlice, type PokemonListSlice } from "./pokemonList";
 
-export interface PokedexState extends PokemonTypeSlice, PokemonListSlice {}
+export interface PokedexState extends PokemonTypeSlice, PokemonListSlice {
+  sync: () => void;
+}
 
 export const usePokedexStore = create<PokedexState>()(
   devtools(

@@ -8,48 +8,34 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Textarea } from "../ui/textarea";
-import { useState } from "react";
+import type { usePKMNoteDialog } from "./usePKMNoteDialog.hook";
 
-export default function PKMNoteDialog({
-  show,
-  setShow,
-  fromNote,
-  idx,
-  saveNote,
+const PKMNoteDialog = ({
+  open,
+  setOpen,
+  hook,
 }: {
-  show: boolean;
-  setShow: (s: boolean) => void;
-  fromNote?: Note;
-  idx?: number;
-  saveNote: (note: Note, idx?: number) => void;
-}) {
-  const [note, setNote] = useState<Note>({} as Note);
+  open: boolean;
+  setOpen: (s: boolean) => void;
+  hook: ReturnType<typeof usePKMNoteDialog>;
+}) => (
+  <Dialog open={open} onOpenChange={setOpen}>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Note</DialogTitle>
+      </DialogHeader>
+      <Textarea
+        value={hook.content}
+        onChange={(e) => hook.setContent(e.target.value)}
+      />
+      <DialogFooter className="flex flex-row justify-between">
+        <DialogClose className="flex">
+          <Button variant={"outline"}>Cancel</Button>
+          <Button onClick={(_) => hook.saveNote(hook.content)}>Save</Button>
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+);
 
-  if (fromNote) setNote(fromNote);
-  return (
-    <Dialog open={show} onOpenChange={setShow}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Note</DialogTitle>
-        </DialogHeader>
-        <Textarea
-          value={note.content}
-          onChange={(e) => setNote({ ...note, content: e.target.value })}
-        />
-        <DialogFooter className="flex flex-row justify-between">
-          <DialogClose className="flex" asChild>
-            <Button variant={"outline"}>Cancel</Button>
-          </DialogClose>
-          <Button
-            onClick={(_) => {
-              saveNote(note, idx);
-              setShow(false);
-            }}
-          >
-            Save
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
+export { PKMNoteDialog };

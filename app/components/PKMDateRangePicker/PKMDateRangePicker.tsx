@@ -2,7 +2,7 @@ import { CalendarIcon, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
-import type useDateRangePicker from "./useDateRangePicker.hook";
+import { type useDateRangePicker } from "./useDateRangePicker.hook";
 
 type PKMDateRangeProps = {
   className?: string;
@@ -11,8 +11,8 @@ type PKMDateRangeProps = {
 
 const PKMDateRangePicker = ({ className = "", hook }: PKMDateRangeProps) => (
   <Popover>
-    <div className={`${className}`}>
-      <PopoverTrigger className="grow overflow-auto">
+    <div className={`${className} grow overflow-auto`}>
+      <PopoverTrigger asChild>
         <Button variant="outline" className="w-full justify-start">
           <CalendarIcon />
           {hook.isEmpty ? (
@@ -45,4 +45,4 @@ const PKMDateRangePicker = ({ className = "", hook }: PKMDateRangeProps) => (
   </Popover>
 );
 
-export default PKMDateRangePicker;
+export { PKMDateRangePicker };

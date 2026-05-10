@@ -8,17 +8,27 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 
-export default function PKMConfirmationDialog({ show }: { show: boolean }) {
+export default function PKMConfirmationDialog({
+  show,
+  setShow,
+  onConfirmation,
+}: {
+  show: boolean;
+  setShow: (s: boolean) => void;
+  onConfirmation: () => any;
+}) {
   /* todo: connect */
   return (
-    <AlertDialog open={show}>
+    <AlertDialog open={show} onOpenChange={setShow}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex flex-row justify-between">
           <AlertDialogCancel>No</AlertDialogCancel>
-          <AlertDialogAction variant={"destructive"}>Yes</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirmation} variant={"destructive"}>
+            Yes
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -10,7 +10,7 @@ import { LucideProvider } from "lucide-react";
 import "./app.css";
 
 import type { Route } from "./+types/root";
-import PKMNavBar from "./components/PKMNavBar/PKMNavBar";
+import { PKMNavBar } from "./components/PKMNavBar/PKMNavBar";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
 import { usePokedexStore } from "./store";

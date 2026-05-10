@@ -9,4 +9,4 @@ const useDateRangePicker = (
   return { dateRange, setDateRange, isEmpty, reset };
 };
 
-export default useDateRangePicker;
+export { useDateRangePicker };

@@ -11,17 +11,16 @@ import {
 } from "../ui/dialog";
 import { Field, FieldLabel } from "../ui/field";
 import PKMSelect from "../PKMTypeSelect/PKMTypeSelect";
-import PKMDateRange from "../PKMDateRange/PKMDateRange";
+import { PKMDateRangePicker } from "../PKMDateRangePicker/PKMDateRangePicker";
 import PKMHeightSlider from "../PKMHeightSlider/PKMHeightSlider";
-
 import { Checkbox } from "../ui/checkbox";
 import usePKMFilterDialogHook from "./usePKMFilterDialog.hook";
 
-export default function PKMFilterDialog({
+const PKMFilterDialog = ({
   setFilteredPokemon,
 }: {
-  setFilteredPokemon: (pkms: Pokemon[]) => void;
-}) {
+  setFilteredPokemon: (p: Pokemon[]) => void;
+}) => {
   const {
     sliderHook,
     typeSelectHook,
@@ -30,10 +29,9 @@ export default function PKMFilterDialog({
     setOnlyCaught,
     applyFilters,
   } = usePKMFilterDialogHook(setFilteredPokemon);
-
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline" className="py-4.5">
           <LucideFilter />
           Filters
@@ -58,7 +56,7 @@ export default function PKMFilterDialog({
         <Field>
           <div className="flex">
             <FieldLabel className="basis-1/3">Caught Date</FieldLabel>
-            <PKMDateRange
+            <PKMDateRangePicker
               hook={dateRangePickerHook}
               className="basis-2/3 flex max-w-2/3"
             />
@@ -74,7 +72,7 @@ export default function PKMFilterDialog({
           </div>
         </Field>
         <DialogFooter>
-          <DialogClose>
+          <DialogClose asChild>
             <Button onClick={applyFilters} className="w-full">
               Apply
             </Button>
@@ -83,4 +81,6 @@ export default function PKMFilterDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default PKMFilterDialog;

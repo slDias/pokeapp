@@ -1,10 +1,10 @@
 import { FieldLabel } from "../ui/field";
 import { Slider } from "../ui/slider";
-import type usePKMHeightSliderHook from "./usePKMHeightSlider.hook";
+import { type usePKMHeightSlider } from "./usePKMHeightSlider.hook";
 
 type PKMHeightSliderProps = {
   className?: string;
-  hook: ReturnType<typeof usePKMHeightSliderHook>;
+  hook: ReturnType<typeof usePKMHeightSlider>;
 };
 
 const PKMHeightSlider = ({ className = "", hook }: PKMHeightSliderProps) => (

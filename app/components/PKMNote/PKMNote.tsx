@@ -1,6 +1,6 @@
 import { Ellipsis } from "lucide-react";
 import { Button } from "../ui/button";
-import PKMNoteDialog from "../PKMNoteDialog/PKMNoteDialog";
+import { PKMNoteDialog } from "../PKMNoteDialog/PKMNoteDialog";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -9,24 +9,29 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import PKMConfirmationDialog from "../PKMConfirmationDialog";
+import { usePKMNoteDialog } from "../PKMNoteDialog/usePKMNoteDialog.hook";
+import { usePokedexStore } from "~/store";
 
 export default function PKMNote({
-  note,
+  pokemonId,
   idx,
-  saveNote,
+  note,
 }: {
-  note: Note;
+  pokemonId: number;
   idx: number;
-  saveNote: (n: Note, i?: number) => void;
+  note: Note;
 }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const deleteNote = usePokedexStore((state) => state.deleteNote);
   return (
     <div className="border-2 rounded-lg bg-background">
       <div className="border-b-2 p-2 border-dashed">{note.content}</div>
       <div className="flex items-center justify-between px-2 py-1">
-        <div className="text-sm">{note.createdDate.toLocaleString()}</div>
-        {/*<DropdownMenu>
+        <div className="text-sm">
+          {new Date(note.createdDate).toLocaleString()}
+        </div>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"ghost"}>
               <Ellipsis></Ellipsis>
@@ -40,17 +45,18 @@ export default function PKMNote({
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>*/}
+        </DropdownMenu>
       </div>
-      {/*<PKMNoteDialog
-        show={showEditDialog}
-        setShow={setShowEditDialog}
-        fromNote={note}
-        idx={idx}
-        saveNote={saveNote}
-        />*/}
-      {/* todo: breaks because we are passing note again which wont be shallow and cause re-render */}
-      <PKMConfirmationDialog show={showDeleteDialog} />
+      <PKMNoteDialog
+        open={showEditDialog}
+        setOpen={setShowEditDialog}
+        hook={usePKMNoteDialog(pokemonId, note, idx)}
+      />
+      <PKMConfirmationDialog
+        show={showDeleteDialog}
+        setShow={setShowDeleteDialog}
+        onConfirmation={() => deleteNote(pokemonId, idx)}
+      />
     </div>
   );
 }

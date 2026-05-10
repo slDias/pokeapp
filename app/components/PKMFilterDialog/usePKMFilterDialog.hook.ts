@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { usePokedexStore } from "~/store";
-import usePKMHeightSliderHook from "~/components/PKMHeightSlider/usePKMHeightSlider.hook";
+import { usePKMHeightSlider } from "~/components/PKMHeightSlider/usePKMHeightSlider.hook";
 import usePKMTypeSelect from "~/components/PKMTypeSelect/usePKMTypeSelect";
-import useDateRangePickerHook from "~/components/PKMDateRange/useDateRangePicker.hook";
+import { useDateRangePicker } from "~/components/PKMDateRangePicker/useDateRangePicker.hook";
 import type { DateRange } from "react-day-picker";
+
+const MIN_HEIGHT = 10.0;
+const MAX_HEIGHT = 10000.0;
 
 export default function usePKMFilterDialog(
   setFilteredPokemon: (pkms: Pokemon[]) => void,
 ) {
   const pokemonList = usePokedexStore((state) => state.pokemonList);
 
-  const [heightRange, setHeightRange] = useState<number[]>([1.0, 10000.0]);
+  const [heightRange, setHeightRange] = useState<number[]>([
+    MIN_HEIGHT,
+    MAX_HEIGHT,
+  ]);
   const [selectedType, setSelectedType] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
@@ -18,9 +24,14 @@ export default function usePKMFilterDialog(
   });
   const [onlyCaught, setOnlyCaught] = useState(false);
 
-  const sliderHook = usePKMHeightSliderHook(heightRange, setHeightRange);
+  const sliderHook = usePKMHeightSlider(
+    heightRange,
+    setHeightRange,
+    MIN_HEIGHT,
+    MAX_HEIGHT,
+  );
   const typeSelectHook = usePKMTypeSelect(selectedType, setSelectedType);
-  const dateRangePickerHook = useDateRangePickerHook(dateRange, setDateRange);
+  const dateRangePickerHook = useDateRangePicker(dateRange, setDateRange);
 
   const heightFilter = (p: Pokemon) =>
     p.heightCm >= heightRange[0] && p.heightCm <= heightRange[1];
