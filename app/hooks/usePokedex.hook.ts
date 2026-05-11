@@ -6,14 +6,33 @@ export default function usePokedex() {
   const setError = (msg: string) =>
     toast.error(msg, { position: "top-center" });
 
-  const pokemonList = usePokedexStore((state) => state.pokemonList);
-  const [filteredPokemonList, setFilteredPokemon] = useState<Pokemon[]>(
-    pokemonList.values().toArray(),
+  const fullPkmMap = usePokedexStore((state) => state.pokemonList);
+
+  const [filterIds, setFilterIds] = useState<Set<number>>(
+    new Set(fullPkmMap.keys()),
   );
+
+  const [searchIds, setSearchIds] = useState<Set<number>>(
+    new Set(fullPkmMap.keys()),
+  );
+
+  const defaultSortFunc = (a: Pokemon, b: Pokemon) => 0;
+  const [sortFunc, setSortFunc] = useState<(a: Pokemon, b: Pokemon) => number>(
+    () => defaultSortFunc,
+  );
+
+  const resultingPokemonList = filterIds
+    .intersection(searchIds)
+    .keys()
+    .map((pid) => fullPkmMap.get(pid)!)
+    .toArray()
+    .sort(sortFunc);
 
   return {
     syncProgress: usePokedexStore((state) => state.syncProgress),
-    filteredPokemonList,
-    setFilteredPokemon,
+    setFilterIds,
+    setSearchIds,
+    setSortFunc,
+    resultingPokemonList,
   };
 }

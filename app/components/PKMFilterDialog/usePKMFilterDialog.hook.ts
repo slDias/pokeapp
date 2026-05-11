@@ -9,7 +9,7 @@ const MIN_HEIGHT = 10.0;
 const MAX_HEIGHT = 10000.0;
 
 export default function usePKMFilterDialog(
-  setFilteredPokemon: (pkms: Pokemon[]) => void,
+  setFilterIds: (ids: Set<number>) => void,
 ) {
   const pokemonList = usePokedexStore((state) => state.pokemonList);
 
@@ -49,14 +49,16 @@ export default function usePKMFilterDialog(
   const caughtFilter = (p: Pokemon) => !onlyCaught || p.caught;
 
   const applyFilters = () => {
-    setFilteredPokemon(
-      pokemonList
-        .values()
-        .filter(heightFilter)
-        .filter(typeFilter)
-        .filter(dateFilter)
-        .filter(caughtFilter)
-        .toArray(),
+    setFilterIds(
+      new Set(
+        pokemonList
+          .values()
+          .filter(heightFilter)
+          .filter(typeFilter)
+          .filter(dateFilter)
+          .filter(caughtFilter)
+          .map((p) => p.id),
+      ),
     );
   };
 

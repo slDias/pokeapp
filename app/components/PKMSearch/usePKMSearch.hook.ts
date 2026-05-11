@@ -3,24 +3,25 @@ import Fuse from "fuse.js";
 import debounce from "lodash.debounce";
 import { usePokedexStore } from "~/store";
 
-export default function usePKMSearch(
-  filteredPokemonList: Pokemon[],
-  setFilteredPokemon: (pl: Pokemon[]) => void,
-) {
+export default function usePKMSearch(setSearchIds: (pl: Set<number>) => void) {
   const [searchText, _setSearchText] = useState("");
+  const fullPkmList = usePokedexStore((state) => state.pokemonList);
+  const strippedPkmList = fullPkmList
+    .values()
+    .map((p) => ({ id: p.id, name: p.name }));
 
   const fuse = useMemo(() => {
-    return new Fuse(filteredPokemonList, {
+    return new Fuse(strippedPkmList.toArray(), {
       keys: ["name", "id"],
       threshold: 0.3,
     });
-  }, []);
+  }, [fullPkmList]);
 
   const setSearchText = useMemo(
     () =>
       debounce((newText: string) => {
-        setFilteredPokemon(fuse.search(newText).map((v) => v.item));
-      }, 300),
+        setSearchIds(new Set(fuse.search(newText).map((v) => v.item.id)));
+      }, 350),
     [],
   );
 

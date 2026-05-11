@@ -17,9 +17,9 @@ import { Checkbox } from "../ui/checkbox";
 import usePKMFilterDialogHook from "./usePKMFilterDialog.hook";
 
 const PKMFilterDialog = ({
-  setFilteredPokemon,
+  setFilterIds,
 }: {
-  setFilteredPokemon: (p: Pokemon[]) => void;
+  setFilterIds: (ids: Set<number>) => void;
 }) => {
   const {
     sliderHook,
@@ -28,7 +28,7 @@ const PKMFilterDialog = ({
     onlyCaught,
     setOnlyCaught,
     applyFilters,
-  } = usePKMFilterDialogHook(setFilteredPokemon);
+  } = usePKMFilterDialogHook(setFilterIds);
   return (
     <Dialog>
       <DialogTrigger asChild>

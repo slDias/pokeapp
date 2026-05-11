@@ -10,11 +10,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useState } from "react";
+import { usePKMSortMenu, type setSortFuncType } from "./usePKMSortMenu.hook";
 
-export default function PKMSortMenu() {
-  const [sortField, setSortField] = useState("id");
-  const [order, setOrder] = useState("ascending");
+type Props = {
+  setSortFunc: setSortFuncType;
+};
+
+export default function PKMSortMenu({ setSortFunc }: Props) {
+  const {
+    sortField,
+    setSortField,
+    order,
+    setOrder,
+    sortableFields,
+    ASC,
+    DESC,
+  } = usePKMSortMenu(setSortFunc);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,26 +40,24 @@ export default function PKMSortMenu() {
           <DropdownMenuLabel>Sort field</DropdownMenuLabel>
           <DropdownMenuRadioGroup
             value={sortField}
-            onValueChange={setSortField}
+            onValueChange={(v) => setSortField(v as keyof Pokemon)}
           >
-            <DropdownMenuRadioItem value="id">Id</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="name">Name</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="height">Height</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="type">Type</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="caught">Caught</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="caughtDate">
-              Caught Date
-            </DropdownMenuRadioItem>
+            {sortableFields
+              .entries()
+              .toArray()
+              .map(([key, label]) => (
+                <DropdownMenuRadioItem key={key} value={key}>
+                  {label}
+                </DropdownMenuRadioItem>
+              ))}
           </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Order</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={order} onValueChange={setOrder}>
-            <DropdownMenuRadioItem value="ascending">
-              Ascending
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="descending">
+            <DropdownMenuRadioItem value={ASC}>Ascending</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value={DESC}>
               Descending
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>

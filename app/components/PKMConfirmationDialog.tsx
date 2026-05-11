@@ -17,7 +17,6 @@ export default function PKMConfirmationDialog({
   setShow: (s: boolean) => void;
   onConfirmation: () => any;
 }) {
-  /* todo: connect */
   return (
     <AlertDialog open={show} onOpenChange={setShow}>
       <AlertDialogContent>

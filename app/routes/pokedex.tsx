@@ -12,31 +12,32 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Pokedex() {
-  const { filteredPokemonList, setFilteredPokemon, syncProgress } =
-    usePokedex();
+  const {
+    syncProgress,
+    setFilterIds,
+    setSearchIds,
+    resultingPokemonList,
+    setSortFunc,
+  } = usePokedex();
 
   return (
     <div>
       <div className="border-b px-2 py-4 flex gap-2">
-        <PKMSearch
-          filteredPokemonList={filteredPokemonList}
-          setFilteredPokemon={setFilteredPokemon}
-          className="gap-1 grow"
-        />
+        <PKMSearch setSearchIds={setSearchIds} className="gap-1 grow" />
         <div className="flex flex-col shrink gap-1">
-          <PKMSortMenu />
-          <PKMFilterDialog setFilteredPokemon={setFilteredPokemon} />
+          <PKMSortMenu setSortFunc={setSortFunc} />
+          <PKMFilterDialog setFilterIds={setFilterIds} />
         </div>
       </div>
       {syncProgress != 100 && <Progress value={syncProgress} />}
       <div className="grid mx-2 my-4 grid-cols-3 gap-2">
-        {filteredPokemonList.map((p) => (
+        {resultingPokemonList.map((p) => (
           <Link to={`/pokemon/${p.id}`} key={p.id}>
             <PKMCard pokemon={p} />
           </Link>
         ))}
       </div>
-      {!filteredPokemonList.length && (
+      {!resultingPokemonList.length && (
         <div className="text-center opacity-60">
           <span>No pokémons matches your filters</span>
         </div>
