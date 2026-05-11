@@ -2,42 +2,61 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "~/components/ui/chart";
-import { Pie, PieChart } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { usePKMTypeChart } from "./usePKMTypeChart.hook";
 
 export default function PKMTypeChart() {
-  const chartData = [
-    { type: "plant", pokemons: 5, fill: "var(--chart-1)" },
-    { type: "fire", pokemons: 3, fill: "var(--chart-2)" },
-  ]; // TODO: calculate from captured pokemons and set proper colors
-  const chartConfig = {
-    pokemons: {
-      label: "Pokemons",
-    },
-    plant: {
-      label: "Plant",
-    },
-    fire: {
-      label: "Fire",
-    },
-  } satisfies ChartConfig;
+  const { chartData, chartConfig } = usePKMTypeChart();
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-10">
-      <PieChart>
+    <ChartContainer config={chartConfig}>
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        layout="vertical"
+        margin={{
+          right: 16,
+        }}
+      >
+        <CartesianGrid horizontal={false} />
+        <YAxis
+          dataKey="type"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          hide
+        />
+        <XAxis dataKey="pokemons" type="number" hide />
         <ChartTooltip
           cursor={false}
-          content={<ChartTooltipContent hideLabel />}
+          content={<ChartTooltipContent indicator="line" />}
         />
-        <Pie
-          data={chartData}
-          dataKey="pokemons"
-          nameKey="type"
-          label
-          innerRadius={55}
-        />
-      </PieChart>
+        <Bar dataKey="pokemons" fill="var(--chart-1)" radius={4}>
+          <LabelList
+            dataKey="type"
+            position="insideLeft"
+            offset={8}
+            className="fill-(--color-label)"
+            fontSize={12}
+          />
+          <LabelList
+            dataKey="pokemons"
+            position="right"
+            offset={8}
+            className="fill-foreground"
+            fontSize={12}
+          />
+        </Bar>
+      </BarChart>
     </ChartContainer>
   );
 }
