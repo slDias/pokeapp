@@ -1,29 +1,29 @@
 import { describe, expect, vi, beforeEach } from "vitest";
 import { act, renderHook } from "@testing-library/react";
-import mockPokeAPI from "../mockPokeAPI";
+import { MockPokeAPI } from "../mock.test";
 import usePokedex from "~/hooks/usePokedex.hook";
-import { test } from "../base";
+import { test } from "../describe.test";
 
 describe("Test usePokedexState hook", () => {
   beforeEach(() => {
-    mockPokeAPI.mockReset();
+    MockPokeAPI.mockReset();
   });
 
   test("Test initial state fills pokemon list", async ({ rawPokemon }) => {
-    mockPokeAPI.prototype.getPokemonsList = vi.fn().mockImplementation(() => ({
+    MockPokeAPI.prototype.getPokemonsList = vi.fn().mockImplementation(() => ({
       results: [{ name: rawPokemon.name }],
     }));
-    mockPokeAPI.prototype.getPokemonByName = vi
+    MockPokeAPI.prototype.getPokemonByName = vi
       .fn()
       .mockResolvedValue(rawPokemon);
     const { result, rerender } = renderHook(() => usePokedex());
 
     await act(rerender);
 
-    expect(mockPokeAPI.prototype.getPokemonsList).toHaveBeenCalledOnce();
+    expect(MockPokeAPI.prototype.getPokemonsList).toHaveBeenCalledOnce();
     expect(result.current.pokemonList.length).toEqual(1);
     expect(
-      mockPokeAPI.prototype.getPokemonByName,
+      MockPokeAPI.prototype.getPokemonByName,
     ).toHaveBeenCalledExactlyOnceWith(rawPokemon.name);
 
     const pkm = result.current.pokemonList[0];
@@ -59,10 +59,10 @@ describe("Test usePokedexState hook", () => {
   });
 
   test("Test fill after initial state", async ({ rawPokemon }) => {
-    mockPokeAPI.prototype.getPokemonsList = vi.fn().mockImplementation(() => ({
+    MockPokeAPI.prototype.getPokemonsList = vi.fn().mockImplementation(() => ({
       results: [{ name: rawPokemon.name }],
     }));
-    mockPokeAPI.prototype.getPokemonByName = vi
+    MockPokeAPI.prototype.getPokemonByName = vi
       .fn()
       .mockResolvedValue(rawPokemon);
     const { result, rerender } = renderHook(() => usePokedex());
@@ -78,8 +78,8 @@ describe("Test usePokedexState hook", () => {
     listNameMock.mockImplementation(() => ({
       results: [],
     }));
-    mockPokeAPI.prototype.getPokemonsList = listNameMock;
-    mockPokeAPI.prototype.getPokemonByName = vi
+    MockPokeAPI.prototype.getPokemonsList = listNameMock;
+    MockPokeAPI.prototype.getPokemonByName = vi
       .fn()
       .mockResolvedValue(rawPokemon);
     const { result, rerender } = renderHook(() => usePokedex());
